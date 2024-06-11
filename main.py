@@ -28,6 +28,8 @@ prev_2_days = list(price_data.items())[:2]
 yesterday = float(prev_2_days[0][1]["4. close"])
 yesterday2 = float(prev_2_days[1][1]["4. close"])
 change_in_price = round((yesterday2 - yesterday), 5)
+percentage_change = round(((change_in_price/yesterday) * 100), 2)
+ic(percentage_change)
 if change_in_price < 0:
     sign = "🔻"
 else:
@@ -43,7 +45,7 @@ ic(PREV_DATE)
 NEWS_PARAMETER = {
     "q": "AMD",
     "sortBy": "popularity",
-    "apiKey": "e5f0efef67a14fdca284d0508a59aadc"
+    "apiKey": STOCK_NEWS_API_KEY
 }
 news_response = requests.get(url=NEWS_URL, params=NEWS_PARAMETER)
 news_status_code = news_response.status_code
@@ -64,7 +66,7 @@ MY_NUM = os.getenv("MY_NUM")
 client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
 
 if abs(change_in_price) > abs(PRICE_CHANGE):
-    message = client.messages.create(body=f"AMD: {sign}{change_in_price}%\n\nHEADLINE: {headline}\n\nBRIEF: {top_header1}"
+    message = client.messages.create(body=f"AMD: {sign}{percentage_change}%\n\nHEADLINE: {headline}\n\nBRIEF: {top_header1}"
                                      f"\n\nURL: {url}",
                                      from_=TWILIO_NUM,
                                      to=MY_NUM)
